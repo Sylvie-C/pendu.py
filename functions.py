@@ -123,7 +123,7 @@ def pickAword() :
 	The function extracts the words from the file,
 	stores them in a list, selects a random integer,
 	used as index to return the word."""	
-	with open ("mesmots.txt") as fichier :  
+	with open ("dico.txt") as fichier :  
 		contenu = fichier.read()
 		contenu = contenu.split() # words in file splitted at whitespaces or new line sep and stored in List object
 	

@@ -29,11 +29,11 @@ checkFile("scores.txt",name) # player {name:score = 0} stored
 # -> Check if player exists or not. If not, new player added to existing score file (update).
 
 scoreData = readObjFile("scores.txt")
+print(scoreData)
 
 if name in scoreData : # if not new player ...
 	if scoreData[name] > 0 : # if score > 0
-		repResume = input("\nVeux-tu reprendre ta partie précédente ? (O/N)") # choice to resume game or not
-		repResume = forceON (repResume) # force answer O or N (Oui or Non)
+		repResume = forceON (input("\nVeux-tu reprendre ta partie précédente ? (O/N)") ) # force answer O or N to choose resume game or not
 		
 		if repResume == "O" :  # player's choice = resume game (Oui)
 			print ("Ton score actuel est de : " , scoreData[name] , " point(s).")
@@ -51,7 +51,7 @@ except :
 
 
 # --- loop for new game ----
-while rep == "O" or rep == "o" : 
+while rep == "O" : 
 	counter = 0 
 	hiddenWord = pickAword()
 	print ("\nLe mot caché contient " , len(hiddenWord) , " lettres. \nIndice : les accents ne comptent pas.")
@@ -68,9 +68,9 @@ while rep == "O" or rep == "o" :
 		dataFile.write(lettersFound) # writes letters found (none here) in data file
 
 	# while rounds left or player has not found the hidden word
-	while counter<rounds and (lettersFound != hiddenWord) : 
-		counter +=1
+	while (counter<rounds) and (lettersFound != hiddenWord) : 
 		letter = input("\nSaisir une lettre : ")
+		counter +=1
 		
 		letter = strTests(letter) # Correct input tests
 		
@@ -91,24 +91,20 @@ while rep == "O" or rep == "o" :
 			print(lettersFound)
 			
 	# out of "while counter<rounds and (lettersFound != hiddenWord)" loop (if player has won or no more rounds left)
-	if (counter>rounds) : 
-		print("Tu as atteint les " , rounds , " essais. C'est perdu. Le mot caché était " , hiddenWord , ".\
-	\nLa sentence est prononcée : tu seras pendu !!! Ha Ha Ha Ha Haaaaaaa !!! ")
-	else : 
+	if counter >= rounds : 
+		print("Tu as atteint les " , rounds , " essais. C'est perdu. Le mot caché était " , hiddenWord , ".\nLa sentence est prononcée : tu seras pendu !!! Ha Ha Ha Ha Haaaaaaa !!! ")
+
+	if (lettersFound == hiddenWord) : 
 		scoresDict = readObjFile("scores.txt")	 # scores dictionary extraction from file
-		
-		
-		print (scoresDict)
-		
 
 		score = scoresDict[name] # previous score extraction from dictionary
-
 		score += (rounds-counter) # add new score to value
+
 		scoresDict.update({name : score}) # update dictionnary with {player's name:score}
 		
 		print("Bravo ! Tu as trouvé en " , counter , " essai(s) et tu gagnes donc " , rounds-counter, " points.\nTon nouveau score est de " , scoresDict[name] , " point(s).")
 		
-		writeObjFile("scores.txt",score)   # save updated dictionary back to file
+		writeObjFile("scores.txt",scoresDict)   # save updated dictionary back to file
 
 # ------- End of game ----------
 

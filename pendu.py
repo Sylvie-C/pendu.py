@@ -13,29 +13,45 @@ from os import remove # to remove data file at end of game
 
 print ("\nBonjour brave joueur ! \nBienvenue dans le jeu du pendu ! \nTu dois trouver le mot caché ... ou tu seras pendu !!!\nFais ta prière, cowboy, et bonne chance !")
 
-rep = "O"
-name = ""
+# ------- Game beginning
 
-# new game initialization by data file removal
+name = input("\nSi tu es toujours là, saisis ton nom : ")
+name = name.upper()
+
+rep = "O"	# reply to continue game or not
+
+# SCORES file initialization
+
+#	Check if scores file exists or not. If not, new player added with score = 0 (dict type object).
+checkFile("scores.txt",name) # player {name:score = 0} stored
+
+# if scores file exists and player exists -> game resumed by default (previous score updated at end of game)
+# -> Check if player exists or not. If not, new player added to existing score file (update).
+
+scoreData = readObjFile("scores.txt")
+
+if name in scoreData : # if not new player ...
+	if scoreData[name] > 0 : # if score > 0
+		repResume = input("\nVeux-tu reprendre ta partie précédente ? (O/N)") # choice to resume game or not
+		repResume = forceON (repResume) # force answer O or N (Oui or Non)
+		
+		if repResume == "O" :  # player's choice = resume game (Oui)
+			print ("Ton score actuel est de : " , scoreData[name] , " point(s).")
+		else : # if player's choice = no game resume
+			scoresUpdate("scores.txt",name,0) # reset score to 0 (update file scores with {player's name : 0})		
+else : # if new player 
+	scoresUpdate("scores.txt",name,0) # reset score to 0 (update file scores with {player's name : 0})
+
+
+# Initialization of "data.py" file (remove it for new game)
 try : 
 	remove("data.py") # if error thrown (meaning if data file doesn't exist), continue
 except : 
 	pass
 
-# ------- Game beginning
-
-name = input("\nSi tu es toujours là, saisis ton nom : ")
-
-dicoScores = { name : 0 } # dic object key=player's name : value=score
-
-# Scores object stored in "scores.txt" file : 
-with open("scores.txt","wb") as scoresFile : 
-	pickler = Pickler(scoresFile)
-	pickler.dump(dicoScores)
-
 
 # --- loop for new game ----
-while rep=="O" or rep=="o" : 
+while rep == "O" or rep == "o" : 
 	counter = 0 
 	hiddenWord = pickAword()
 	print ("\nLe mot caché contient " , len(hiddenWord) , " lettres. \nIndice : les accents ne comptent pas.")
@@ -79,28 +95,50 @@ while rep=="O" or rep=="o" :
 		print("Tu as atteint les " , rounds , " essais. C'est perdu. Le mot caché était " , hiddenWord , ".\
 	\nLa sentence est prononcée : tu seras pendu !!! Ha Ha Ha Ha Haaaaaaa !!! ")
 	else : 
-		with open("scores.txt","rb") as scoresFile : 
-			unpickler = Unpickler(scoresFile)
-			score = unpickler.load()	 # scores dictionary extraction from file
-
-			totalScore = score[name] 
-			print("Score précédent : " , totalScore)  # check value extracted from file
-
-			totalScore += (rounds-counter) # add new score to value
-			score.update({name : totalScore}) # add new name:score pair to others in dictionary
+		scoresDict = readObjFile("scores.txt")	 # scores dictionary extraction from file
 		
-			print("Bravo ! Tu as trouvé en " , counter , " essai(s) et tu gagnes donc " , rounds-counter, " points.\nTon nouveau score est de " , score[name] , " points.")
 		
-		with open("scores.txt","wb") as scoresFile : 
-			pickler = Pickler(scoresFile) 
-			pickler.dump(score)   # save updated dictionary back to file
+		print (scoresDict)
+		
+
+		score = scoresDict[name] # previous score extraction from dictionary
+
+		score += (rounds-counter) # add new score to value
+		scoresDict.update({name : score}) # update dictionnary with {player's name:score}
+		
+		print("Bravo ! Tu as trouvé en " , counter , " essai(s) et tu gagnes donc " , rounds-counter, " points.\nTon nouveau score est de " , scoresDict[name] , " point(s).")
+		
+		writeObjFile("scores.txt",score)   # save updated dictionary back to file
 
 # ------- End of game ----------
-	print ("\nRejouer (O/N) ?")
-	rep = input()
+
+	rep = forceON ( input("\nRejouer (O/N) ?") ) # force reply O or N to replay
+
 	remove("data.py") # data file removal
 
-print ("Tu t'en vas déjà ? Trouillard ! \nMerci d'avoir joué, au revoir ! ;-) ") # fin du jeu
+print ("Tu t'en vas déjà ? Trouillard(e) ! \nMerci d'avoir joué, au revoir ! ;-) ") # fin du jeu
+
+
+
+# CHECK UPDATE
+scoresData = readObjFile("scores.txt")
+print ("\nCheck file/dict updates : " , scoresData)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

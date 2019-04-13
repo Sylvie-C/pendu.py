@@ -2,12 +2,83 @@
 # !/usr/bin/python3.5
 # -*-coding:<Utf-8>-*-
 
-""" --------- FONCTIONS POUR LE JEU DU PENDU ---------- """
+""" --------- FUNCTIONS FOR GAME "LE PENDU" ---------- """
 
-# Modules et classes appelés par les fonctions
+# MODULES - CLASSES CALLED
 from random import randrange
 from pickle import Pickler, Unpickler
-from re import sub
+from re import sub  # regex module
+from os import path # to check if file existing
+
+
+
+# FUNCTIONS
+
+def writeObjFile (filePath,dataToWrite) : 
+	"""	Function to write data in a file. 
+			Passed parameters = file path, data to write. 
+			Return : none. 
+	"""
+	with open(filePath,"wb") as dataFile : # open file as "w" creates it
+			pickler = Pickler(dataFile)
+			pickler.dump(dataToWrite) # save player's name + score = 0
+
+
+def readObjFile (filePath) : 
+	"""	Function to print and return an object stored in a file.
+			Passed parameter : file path. 
+			Return : object stored in file. """
+	with open (filePath,"rb") as fileName : 
+		unpickler = Unpickler (fileName)
+		data = unpickler.load()
+	return(data)
+
+
+def checkFile(filePath,playerName) : 
+	"""	Function to check if object storage file exists or not.
+			If doesn't exist, the function creates it and adds dict object.
+			with key:value pair of playerName:score=0. 
+			Passed parameters : file path and player's name variable.
+			No return. 
+	"""
+	if (path.isfile("scores.txt") == False) : # if file doesn't exist
+		writeObjFile (filePath,{playerName:0}) # create it adding {player's name : score=0}
+
+
+
+def scoresUpdate(filePath,playerName,score) : 
+	"""	Function to update existing dict object type for players' scores, 
+			within file object storage. 
+			Passed parameters : file path, player's name, score, dictionnary name variable.
+			Returns updated dictionnary. 
+	"""
+	# extract dict data from file
+	data = readObjFile(filePath)
+	
+	# dict update
+	data.update({playerName:score})		
+	
+	# dict storage back to file	
+	writeObjFile(filePath,data)
+
+			
+
+def forceON(string) : 
+	"""	Function to force player's input "O" or "N" or "o" or "n" (Oui / Non)
+			Passed parameters : string.
+			Returns True if "O", False if "N". 
+	"""
+	string = string.upper()
+	while True : # force input while error thrown
+		try : 
+			assert (string == 'O' or string == 'N')
+		except AssertionError : 
+			string = input("\nSaisir O (oui) ou N (non) : ")
+			string = string.upper()
+		else : 
+			break
+	return string
+
 
 
 def noAccents(word) : 
@@ -32,9 +103,9 @@ def noAccents(word) :
 
 def strTests(letter) : 
 	""" Function to test string received as parameter. 
-			The string must be just 1 letter (type str) and not nothing. 
+			The string must be 1 letter type only and not nothing. 
 			Returns the correct string. """
-	while True : # force input while errors 
+	while True : # force input while errors thrown
 		try : 
 			assert len(letter) == 1 # cast error if string length is not exactly 1 letter
 			if (letter.isalpha() == False) : raise TypeError # cast error if not aphabetic str
@@ -52,7 +123,7 @@ def pickAword() :
 	The function extracts the words from the file,
 	stores them in a list, selects a random integer,
 	used as index to return the word."""	
-	with open ("dico.txt") as fichier :  
+	with open ("mesmots.txt") as fichier :  
 		contenu = fichier.read()
 		contenu = contenu.split() # words in file splitted at whitespaces or new line sep and stored in List object
 	
@@ -81,14 +152,11 @@ def findLetter(letter,result,solution) :
 
 
 
+
 # to test and independently execute functions.py file
 if __name__ == "__main__" : 
-	newresult = findLetter("I","L*B*RT*","LIBERTE")
-	print(newresult)
-	
-	
-	
-	
-	
+	fileContent = readObjFile("scores.txt")
+	print(fileContent)
+	print(fileContent["sylvie"])
 	
 

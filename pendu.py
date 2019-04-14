@@ -53,7 +53,7 @@ except :
 # --- loop for new game ----
 while rep == "O" : 
 	counter = 0 
-	hiddenWord = pickAword()
+	hiddenWord = pickAword("dico.txt")
 	print ("\nLe mot caché contient " , len(hiddenWord) , " lettres. \nIndice : les accents ne comptent pas.")
 	
 	rounds = len(hiddenWord)*2 # the player has 2 times the hidden word length of chances to find it

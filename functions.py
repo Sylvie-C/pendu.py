@@ -118,12 +118,12 @@ def strTests(letter) :
 	return letter
 
 
-def pickAword() : 
+def pickAword(filePath) : 
 	"""Function to pick a random word in a custom file.
 	The function extracts the words from the file,
 	stores them in a list, selects a random integer,
 	used as index to return the word."""	
-	with open ("dico.txt") as fichier :  
+	with open (filePath) as fichier :  
 		contenu = fichier.read()
 		contenu = contenu.split() # words in file splitted at whitespaces or new line sep and stored in List object
 	

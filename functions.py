@@ -155,8 +155,7 @@ def findLetter(letter,result,solution) :
 
 # to test and independently execute functions.py file
 if __name__ == "__main__" : 
-	fileContent = readObjFile("scores.txt")
+	fileContent = readObjFile("scores.txt") # Tests readObjFile function
 	print(fileContent)
-	print(fileContent["sylvie"])
 	
 

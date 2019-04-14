@@ -29,7 +29,6 @@ checkFile("scores.txt",name) # player {name:score = 0} stored
 # -> Check if player exists or not. If not, new player added to existing score file (update).
 
 scoreData = readObjFile("scores.txt")
-print(scoreData)
 
 if name in scoreData : # if not new player ...
 	if scoreData[name] > 0 : # if score > 0
@@ -113,30 +112,3 @@ while rep == "O" :
 	remove("data.py") # data file removal
 
 print ("Tu t'en vas déjà ? Trouillard(e) ! \nMerci d'avoir joué, au revoir ! ;-) ") # fin du jeu
-
-
-
-# CHECK UPDATE
-scoresData = readObjFile("scores.txt")
-print ("\nCheck file/dict updates : " , scoresData)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
